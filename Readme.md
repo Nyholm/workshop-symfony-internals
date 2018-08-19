@@ -4,13 +4,13 @@ This workshop slowly builds a framework.
 
 This workshop requires you to be able to run standard Symfony 4 application. We use PHP 7.1+. 
 
-## Exercises
+## Part 1
 
 Below are a short description of each exercise. When you completed one exercise
 and starting with the next one. You can continue with your code or "restart" from
 the branch mentioned in the exercise description. 
 
-### Exercise 1
+### Exercise 1: HTTP objects
 
 Branch: [1-jbof](/../../tree/1-jbof)
 
@@ -26,7 +26,7 @@ You can test your application with:
 php -S 127.0.0.1:8080 
 ```
 
-### Exercise 2
+### Exercise 2: Controller
 
 Branch: [2-request](/../../tree/2-request)
 
@@ -45,7 +45,7 @@ You can test your application with:
 php -S 127.0.0.1:8080 -t public
 ```
 
-### Exercise 3
+### Exercise 3: Event loop
 
 Branch: [3-controller](/../../tree/3-controller)
 
@@ -73,7 +73,7 @@ interface MiddlewareInterface
 
 Make sure to build and run your array of middleware in index.php.
 
-### Exercise 4
+### Exercise 4: Cache
 
 Branch: [4-event-loop](/../../tree/4-event-loop)
 
@@ -83,7 +83,7 @@ good one. (`composer require cache/filesystem-adapter`).
 
 Create a middleware that cache the requests. So the controller is not hit twice. 
 
-### Exercise 5
+### Exercise 5: Container
 
 Branch: [5-cache](/../../tree/5-cache)
 
@@ -99,7 +99,98 @@ idea is to only have one public function: `Kernel::handle(RequestInterface $requ
 
 **Hint:** To *emit* (send) the response: https://github.com/Nyholm/psr7#emitting-a-response
 
-### Exercise 6
+### Exercise 6: Security 
 
 Branch: [6-container](/../../tree/6-container)
 
+Looking better and better now. We want to have that "admin" stuff we had in **jbof**. 
+Lets add some security. Lets first separate *Authentication* (Who are you?) from 
+*Authorization* (What are you allowed to do?). These are two new *things* so we 
+need new middleware.
+
+For this exercise, make sure to create an admin controller that only the user
+"alice" can see. 
+You do not need to validate passwords. 
+
+**Note:** If you return with a response like: 
+```php
+return new Response(401, ['WWW-Authenticate'=>'Basic realm="Admin area"'], 'This page is protected');
+```
+A HTTP Basic authentication login window will show for the user. Read the input to that window by: 
+
+```php
+$auth = $request->getServerParams()['PHP_AUTH_USER'] ?? '';
+$pass = $request->getServerParams()['PHP_AUTH_PW'] ?? '';
+``` 
+
+### Exercise 7: Toolbar 
+
+Branch: [7-security](/../../tree/7-security)
+
+When in "dev" environment, it is nice to have a toolbar that shows some statistics
+about the request. Lets try to implement that. Since this is a new feature we need
+a new middleware. 
+
+The toolbar should be added just before `</body>` of the response. 
+
+**Note:** To gather statistics from ie the cache service you need to create a decorator
+that [decorates the service](https://symfony.com/doc/current/service_container/service_decoration.html).
+
+```php
+class CacheDataCollector implements CacheItemPoolInterface
+{
+    private $real;
+    private $calls;
+
+    public function __construct(CacheItemPoolInterface $cache)
+    {
+        $this->real = $cache;
+    }
+
+    public function getCalls()
+    {
+        return $this->calls;
+    }
+
+    public function getItem($key)
+    {
+        $this->calls['getItem'][] = ['key'=>$key];
+        return $this->real->getItem($key);
+    }
+    // ...
+```
+
+
+### Exercise 8: Exception 
+
+Branch: [8-toobar](/../../tree/8-toobar)
+
+Lets create this controller: 
+
+```php
+use Psr\Http\Message\RequestInterface;
+
+class ExceptionController
+{
+    public function run(RequestInterface $request)
+    {
+        throw new \RuntimeException('This is an exception');
+    }
+}
+```
+
+We want to print a helpful message in "dev" environment and a pretty "I'm sorry"
+page in "prod". Since this is a new feature we need a new middleware.
+
+## Part 2
+
+We built a real good framework now. It is a simple Symfony. Since we like the
+Symfony ecosystem so much. Lets try to refactor our framework to use more Symfony
+components. 
+
+
+### Exercise 1: HTTP Foundation
+### Exercise 2: Event Dispatcher
+### Exercise 3: Cache
+### Exercise 4: HTTP Kernel
+### Exercise 5: Security
