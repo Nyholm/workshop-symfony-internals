@@ -11,6 +11,7 @@ $creator = new ServerRequestCreator($psr17Factory, $psr17Factory, $psr17Factory,
 $request = $creator->fromGlobals();
 $response = new Response();
 
+$middlewares[] = new \App\Middleware\Cache();
 $middlewares[] = new \App\Middleware\Router();
 
 $runner = (new \Relay\RelayBuilder())->newInstance($middlewares);
