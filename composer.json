@@ -1,5 +1,5 @@
 {
-    "name": "nyholm/5-cache",
+    "name": "nyholm/6-container",
     "authors": [
         {
             "name": "Tobias Nyholm",
@@ -13,8 +13,16 @@
     },
     "require": {
         "cache/filesystem-adapter": "^1.0",
+        "cache/void-adapter": "^1.0",
         "nyholm/psr7": "^1.0",
         "nyholm/psr7-server": "^0.2.1",
-        "relay/relay": "1.1"
+        "relay/relay": "1.1",
+        "symfony/config": "^4.0",
+        "symfony/dependency-injection": "^4.0",
+        "symfony/yaml": "^4.0",
+        "zendframework/zend-httphandlerrunner": "^1.0"
+    },
+    "config": {
+        "sort-packages": true
     }
 }

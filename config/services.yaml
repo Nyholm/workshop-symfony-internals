@@ -1,0 +1,37 @@
+# services.yaml
+services:
+  cache:
+    alias: cache.filesystem
+
+  cache.void:
+    class: Cache\Adapter\Void\VoidCachePool
+
+  cache.filesystem:
+    class: Cache\Adapter\Filesystem\FilesystemCachePool
+    arguments: ['@flysystem.filesystem']
+
+  flysystem.filesystem:
+    class: League\Flysystem\Filesystem
+    arguments: ['@flysystem.local_adapter']
+
+  flysystem.local_adapter:
+    class: League\Flysystem\Adapter\Local
+    arguments: ['%kernel.project_dir%/var/cache/%kernel.environment%/fs_cache']
+
+  middleware.cache:
+    class: App\Middleware\Cache
+    arguments: ['@cache']
+    public: true
+
+  controller.startpage:
+    class: App\Controller\StartpageController
+    public: true
+
+  controller.foo:
+    class: App\Controller\FooController
+    public: true
+
+
+
+
+

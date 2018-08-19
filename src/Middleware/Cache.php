@@ -2,29 +2,29 @@
 
 namespace App\Middleware;
 
-use Cache\Adapter\Filesystem\FilesystemCachePool;
-use League\Flysystem\Adapter\Local;
-use League\Flysystem\Filesystem;
 use Psr\Cache\CacheItemPoolInterface;
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 class Cache implements MiddlewareInterface
 {
-    /*** @var CacheItemPoolInterface */
+    /**
+     * @var CacheItemPoolInterface
+     */
     private $cache;
 
-    /** @var int */
+    /**
+     * @var int
+     */
     private $ttl;
 
-    public function __construct()
+    public function __construct(CacheItemPoolInterface $cache)
     {
-        $flysystem = new Filesystem(new Local(__DIR__.'/../../var/cache/fs_cache'));
-        $this->cache = new FilesystemCachePool($flysystem);
+        $this->cache = $cache;
         $this->ttl = 300;
     }
 
-    public function __invoke(Request $request, Response $response, callable $next)
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next)
     {
         $uri = $request->getUri();
         $cacheKey = 'url'.sha1($uri->getPath().'?'.$uri->getQuery());
