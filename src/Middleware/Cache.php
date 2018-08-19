@@ -6,8 +6,8 @@ use Cache\Adapter\Filesystem\FilesystemCachePool;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
 use Psr\Cache\CacheItemPoolInterface;
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 class Cache implements MiddlewareInterface
 {
@@ -24,7 +24,7 @@ class Cache implements MiddlewareInterface
         $this->ttl = 300;
     }
 
-    public function __invoke(Request $request, Response $response, callable $next)
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next)
     {
         $uri = $request->getUri();
         $cacheKey = 'url'.sha1($uri->getPath().'?'.$uri->getQuery());
