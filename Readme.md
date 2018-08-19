@@ -195,4 +195,5 @@ components.
 ### Exercise 4: HTTP Foundation
 ### Exercise 5: Cache
 ### Exercise 6: HTTP Kernel
-### Exercise 7: Security
+### Exercise 7: Router
+### Exercise 8: Framework Bundle
