@@ -14,7 +14,7 @@ services:
   App\Controller\:
     resource: '../src/Controller/*'
     public: true
-    tags: ['controller.service_arguments']
+    tags: ['app.controller']
 
   App\Security\Voter\:
     resource: '../src/Security/Voter/*'
