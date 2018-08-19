@@ -1,11 +1,21 @@
 <?php
 
-if (isset($_GET['page']) && $_GET['page'] === 'foo') {
-    echo "Foo page <br>";
+use Nyholm\Psr7\Factory\Psr17Factory;
+use Nyholm\Psr7\Response;
+use Nyholm\Psr7Server\ServerRequestCreator;
+
+require __DIR__.'/vendor/autoload.php';
+
+$psr17Factory = new Psr17Factory();
+$creator = new ServerRequestCreator($psr17Factory, $psr17Factory, $psr17Factory, $psr17Factory);
+$request = $creator->fromGlobals();
+
+$query = $request->getQueryParams();
+if (isset($query['page']) && $query['page'] === 'foo') {
+    $response = new Response(200, [], 'Foo page');
 } else {
-    echo "Welcome to index! <br>";
+    $response = new Response(200, [], 'Welcome to index!');
 }
 
-if ($_SERVER['REMOTE_ADDR'] === '127.0.0.1') {
-    echo "(admin stuff)";
-}
+// Send response
+echo $response->getBody();

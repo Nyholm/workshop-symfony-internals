@@ -5,5 +5,6 @@ All the exercises is on the master branch. See https://github.com/Nyholm/worksho
 Run with 
 
 ```
+composer update
 php -S 127.0.0.1:8080 
 ```
