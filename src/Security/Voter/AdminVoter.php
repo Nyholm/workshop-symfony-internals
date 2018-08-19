@@ -21,6 +21,10 @@ class AdminVoter implements VoterInterface
         $uri = $request->getUri()->getPath();
         $token = $this->tokenStorage->getLastToken();
 
+        if (null === $token) {
+            return VoterInterface::ACCESS_ABSTAIN;
+        }
+
         if (strtolower($token['username']) !== 'alice' && $uri === '/admin') {
             return VoterInterface::ACCESS_DENIED;
         }
