@@ -302,7 +302,7 @@ the documentation for the [routing **component**](http://symfony.com/doc/current
 **Note:** Make sure to register `Symfony\Component\HttpKernel\EventListener\RouterListener`
 in the service container. 
 
-#### Exercise 8: HttpKernel (important)
+### Exercise 8: HttpKernel (important)
 
 Branch: [27-router](/../../tree/27-router)
 
