@@ -4,17 +4,19 @@ use Nyholm\Psr7\Factory\Psr17Factory;
 use Nyholm\Psr7\Response;
 use Nyholm\Psr7Server\ServerRequestCreator;
 
-require __DIR__.'/vendor/autoload.php';
+require __DIR__.'/../vendor/autoload.php';
 
 $psr17Factory = new Psr17Factory();
 $creator = new ServerRequestCreator($psr17Factory, $psr17Factory, $psr17Factory, $psr17Factory);
 $request = $creator->fromGlobals();
 
-$query = $request->getQueryParams();
-if (isset($query['page']) && $query['page'] === 'foo') {
-    $response = new Response(200, [], 'Foo page');
+$uri = $request->getUri()->getPath();
+if ($uri === '/') {
+    $response = (new \App\Controller\StartpageController())->run($request);
+} elseif ($uri === '/foo') {
+    $response = (new \App\Controller\FooController())->run($request);
 } else {
-    $response = new Response(200, [], 'Welcome to index!');
+    $response = new Response(404, [], 'Not found');
 }
 
 // Send response
