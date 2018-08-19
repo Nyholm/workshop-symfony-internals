@@ -10,9 +10,9 @@ class ExceptionHandler implements MiddlewareInterface
 {
     private $env;
 
-    public function __construct(string $env)
+    public function __construct(string $environment)
     {
-        $this->env = $env;
+        $this->env = $environment;
     }
 
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next)

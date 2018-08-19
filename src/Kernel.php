@@ -4,6 +4,11 @@ declare(strict_types=1);
 
 namespace App;
 
+use App\Middleware\Authentication;
+use App\Middleware\Cache;
+use App\Middleware\ExceptionHandler;
+use App\Middleware\SecurityVoters;
+use App\Middleware\Toolbar;
 use Nyholm\Psr7\Response;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -36,13 +41,13 @@ class Kernel
     {
         $this->boot();
 
-        $middlewares[] = $this->container->get('middleware.exception');
-        $middlewares[] = $this->container->get('middleware.auth');
-        $middlewares[] = $this->container->get('middleware.security');
-        $middlewares[] = $this->container->get('middleware.cache');
+        $middlewares[] = $this->container->get(ExceptionHandler::class);
+        $middlewares[] = $this->container->get(Authentication::class);
+        $middlewares[] = $this->container->get(SecurityVoters::class);
+        $middlewares[] = $this->container->get(Cache::class);
         $middlewares[] = new \App\Middleware\Router($this->container);
         if ($this->debug) {
-            $middlewares[] = $this->container->get('middleware.toolbar');
+            $middlewares[] = $this->container->get(Toolbar::class);
         }
 
         $runner = (new \Relay\RelayBuilder())->newInstance($middlewares);

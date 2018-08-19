@@ -1,13 +1,3 @@
 services:
   cache:
     alias: cache.void
-
-  middleware.toolbar:
-    class: App\Middleware\Toolbar
-    public: true
-    arguments: ['@app.data_collector.cache']
-
-  app.data_collector.cache:
-    class: App\DataCollector\CacheDataCollector
-    decorates: 'cache'
-    arguments: ['@app.data_collector.cache.inner']

@@ -12,7 +12,7 @@ class SecurityVoters implements MiddlewareInterface
     /** @var  VoterInterface[] */
     private $voters;
 
-    public function __construct(array $voters)
+    public function __construct(iterable $voters)
     {
         $this->voters = $voters;
     }

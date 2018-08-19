@@ -1,4 +1,32 @@
 services:
+  _defaults:
+    autowire: true
+    public: false
+    bind:
+      Psr\Cache\CacheItemPoolInterface: '@cache'
+      $environment: '%kernel.environment%'
+
+  App\:
+    resource: '../src/*'
+    exclude: '../src/{Entity,Migrations,Tests,Kernel.php}'
+
+  App\Controller\:
+    resource: '../src/Controller/*'
+    public: true
+    tags: ['controller.service_arguments']
+
+  App\Security\Voter\:
+    resource: '../src/Security/Voter/*'
+    tags: ['app.security.voter']
+
+  App\Middleware\:
+    resource: '../src/Middleware/*'
+    exclude: '../src/Middleware/{Router.php}'
+    public: true
+
+
+  # ---------------
+
   cache:
     alias: cache.filesystem
 
@@ -7,60 +35,17 @@ services:
 
   cache.filesystem:
     class: Cache\Adapter\Filesystem\FilesystemCachePool
-    arguments: ['@flysystem.filesystem']
 
-  flysystem.filesystem:
-    class: League\Flysystem\Filesystem
-    arguments: ['@flysystem.local_adapter']
+  League\Flysystem\Filesystem:
+    arguments: ['@League\Flysystem\Adapter\Local']
 
-  flysystem.local_adapter:
-    class: League\Flysystem\Adapter\Local
+  League\Flysystem\Adapter\Local:
     arguments: ['%kernel.project_dir%/var/cache/%kernel.environment%/fs']
 
-  middleware.cache:
-    class: App\Middleware\Cache
-    arguments: ['@cache']
+  App\Middleware\SecurityVoters:
     public: true
+    arguments: [!tagged app.security.voter]
 
-  middleware.exception:
-    class: App\Middleware\ExceptionHandler
-    arguments: ['%kernel.environment%']
-    public: true
-
-  middleware.auth:
-    class: App\Middleware\Authentication
-    arguments: ['@security.token_storage']
-    public: true
-
-  middleware.security:
-    class: App\Middleware\SecurityVoters
-    public: true
-    arguments:
-      - ['@security.voter.admin', '@security.voter.image']
-
-  security.token_storage:
-    class: App\Security\TokenStorage
-
-  security.voter.admin:
-    class: App\Security\Voter\AdminVoter
-    arguments: ['@security.token_storage']
-
-  security.voter.image:
-    class: App\Security\Voter\ImageVoter
-
-  controller.admin:
-    class: App\Controller\AdminController
-    arguments: ['@security.token_storage']
-    public: true
-
-  controller.exception:
-    class: App\Controller\ExceptionController
-    public: true
-
-  controller.startpage:
-    class: App\Controller\StartpageController
-    public: true
-
-  controller.foo:
-    class: App\Controller\FooController
-    public: true
+  App\DataCollector\CacheDataCollector:
+    decorates: 'cache'
+    arguments: ['@App\DataCollector\CacheDataCollector.inner']
