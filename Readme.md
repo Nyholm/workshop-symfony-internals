@@ -214,13 +214,84 @@ You should also create a small command class to test your `./bin/console`.
 Make sure you can register your command in the service container. This allows 
 command classes to use dependency injection as normal. 
 
-**Hint:** There is a 
+**Hint:** There is a class `Symfony\Component\Console\CommandLoader\ContainerCommandLoader`
+that is registered With the `AddConsoleCommandPass`.
 
- 
+```php
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\DependencyInjection\AddConsoleCommandPass;
+
+$container->registerForAutoconfiguration(Command::class)->addTag('console.command');
+$container->addCompilerPass(new AddConsoleCommandPass());
+```
 
 ### Exercise 3: Event Dispatcher
+
+Branch: [22-command](/../../tree/22-command)
+
+The time has come for us to replace the heart of our application, the event loop.
+This is a major refactoring and we need to update all our middleware. Start by
+downloadning `symfony/event-dispatcher`. Instead of having one "loop" as we did
+with `relay/relay` we can now create multiple loops (or events). 
+
+Create event classes for: 
+* An incoming request.
+* Parsing/Filtering of a response
+* Exception
+
+Our middlewares should be refactored to `EventSubscribers`. The `Kernel::handle`
+is also subject for a rewrite. 
+
+The benefit of different "loops" (or events) is that we can show the toolbar on 
+an exception page. That was not possile before. 
+
+**Hint:** One feature of `symfony/event-dispatcher` is that we can use 
+`$event->stopPropagation()` which stops the current loop. That could be 
+useful in our cache or security middleware. 
+
 ### Exercise 4: HTTP Foundation
+
+Branch: [23-event-dispatcher](/../../tree/23-event-dispatcher)
+
+To fully be able to integrate with symfony components we should be using Symfonys
+implementation of request and responses. So lets remove PSR-7 and use `symfony/http-foundation`.
+
+It is a lot to rewrite but it is just simple changes. Feel free to skip ahead
+to next exercise. 
+
 ### Exercise 5: Cache
+
+Branch: [24-http-foundation](/../../tree/24-http-foundation)
+
+PHP-cache is great. But we are moving towards full Symfony. Lets use 
+`symfony/cache` instead. 
+
+**Note:** This is a simple change becuase PSR-6 is awesome. 
+
 ### Exercise 6: HTTP Kernel
+
+Branch: [25-cache](/../../tree/25-cache)
+
+We've done a lot of heavy lifting ourself in our `App\Kernel`. Let `symfony/http-kernel`
+be responsible for that from now on. Our `App\Kernel` should extend `Symfony\Component\HttpKernel\Kernel`
+but we still need to define where our configuration is located. 
+
+The Symfony kernel uses a `HttpKernel` to handle the request. This is done automatically
+if you register a `http_kernel` service:
+
+```yaml
+  http_kernel:
+    class: Symfony\Component\HttpKernel\HttpKernel
+    public: true
+    arguments:
+      - '@Symfony\Component\EventDispatcher\EventDispatcherInterface'
+      - '@Symfony\Component\HttpKernel\Controller\ControllerResolver'
+
+  Symfony\Component\HttpKernel\Controller\ControllerResolver: ~
+```
+
 ### Exercise 7: Router
+
+Branch: [25-cache](/../../tree/25-cache)
+
 ### Exercise 8: Framework Bundle
