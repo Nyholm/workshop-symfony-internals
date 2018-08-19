@@ -19,7 +19,7 @@ class Cache implements MiddlewareInterface
 
     public function __construct()
     {
-        $flysystem = new Filesystem(new Local(__DIR__.'/../../var/cache/fs_cache'));
+        $flysystem = new Filesystem(new Local(__DIR__.'/../../var/cache/fs'));
         $this->cache = new FilesystemCachePool($flysystem);
         $this->ttl = 300;
     }
