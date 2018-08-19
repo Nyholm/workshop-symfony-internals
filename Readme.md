@@ -189,9 +189,10 @@ Symfony ecosystem so much. Lets try to refactor our framework to use more Symfon
 components. 
 
 
-### Exercise 0: Use Autowiring
-### Exercise 1: HTTP Foundation
-### Exercise 2: Event Dispatcher
-### Exercise 3: Cache
-### Exercise 4: HTTP Kernel
-### Exercise 5: Security
+### Exercise 1: Use Autowiring
+### Exercise 2: Add CLI
+### Exercise 3: HTTP Foundation
+### Exercise 4: Event Dispatcher
+### Exercise 5: Cache
+### Exercise 6: HTTP Kernel
+### Exercise 7: Security
