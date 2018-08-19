@@ -42,6 +42,10 @@ class Cache implements EventSubscriberInterface
     public function onResponse(FilterResponseEvent $event)
     {
         $cacheItem = $this->getCacheItem($event->getRequest());
+        if ($cacheItem->isHit()) {
+            return;
+        }
+
         $response = $event->getResponse();
 
         // Save the response in cache
@@ -49,8 +53,6 @@ class Cache implements EventSubscriberInterface
             ->set($response->getBody()->__toString())
             ->expiresAfter($this->ttl);
         $this->cache->save($cacheItem);
-
-        return $response;
     }
 
     public static function getSubscribedEvents()
