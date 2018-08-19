@@ -8,8 +8,6 @@ use App\Event\FilterResponseEvent;
 use App\Event\GetResponseEvent;
 use App\Event\GetResponseForExceptionEvent;
 use App\Exception\HttpNotFoundException;
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\Config\Exception\FileLocatorFileNotFoundException;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
@@ -22,6 +20,8 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\EventDispatcher\DependencyInjection\RegisterListenersPass;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class Kernel
 {
@@ -41,7 +41,7 @@ class Kernel
     /**
      * Handle a Request and turn it in to a response.
      */
-    public function handle(RequestInterface $request): ResponseInterface
+    public function handle(Request $request): Response
     {
         $this->boot();
 

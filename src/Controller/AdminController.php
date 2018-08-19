@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Security\TokenStorage;
-use Nyholm\Psr7\Response;
-use Psr\Http\Message\RequestInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class AdminController
 {
@@ -17,8 +17,8 @@ class AdminController
         $this->tokenStorage = $tokenStorage;
     }
 
-    public function run(RequestInterface $request)
+    public function run(Request $request)
     {
-        return new Response(200, [], sprintf('Hello %s (admin)', $this->tokenStorage->getLastToken()['username']));
+        return new Response(sprintf('Hello %s (admin)', $this->tokenStorage->getLastToken()['username']));
     }
 }

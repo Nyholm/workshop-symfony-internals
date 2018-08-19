@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Security\Voter;
 
 use App\Security\TokenStorage;
-use Psr\Http\Message\ServerRequestInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 class AdminVoter implements VoterInterface
 {
@@ -16,9 +16,9 @@ class AdminVoter implements VoterInterface
         $this->tokenStorage = $tokenStorage;
     }
 
-    public function vote(ServerRequestInterface $request)
+    public function vote(Request $request): int
     {
-        $uri = $request->getUri()->getPath();
+        $uri = $request->getPathInfo();
         $token = $this->tokenStorage->getLastToken();
 
         if (null === $token) {

@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use Psr\Http\Message\RequestInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 class ExceptionController
 {
-    public function run(RequestInterface $request)
+    public function run(Request $request)
     {
         throw new \RuntimeException('This is an exception');
     }

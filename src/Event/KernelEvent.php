@@ -4,19 +4,19 @@ declare(strict_types=1);
 
 namespace App\Event;
 
-use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\EventDispatcher\Event;
+use Symfony\Component\HttpFoundation\Request;
 
 class KernelEvent extends Event
 {
     private $request;
 
-    public function __construct(ServerRequestInterface $request)
+    public function __construct(Request $request)
     {
         $this->request = $request;
     }
 
-    public function getRequest(): ServerRequestInterface
+    public function getRequest(): Request
     {
         return $this->request;
     }

@@ -3,8 +3,8 @@
 namespace App\Middleware;
 
 use App\Event\GetResponseForExceptionEvent;
-use Nyholm\Psr7\Response;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\Response;
 
 class ExceptionHandler implements EventSubscriberInterface
 {
@@ -22,9 +22,9 @@ class ExceptionHandler implements EventSubscriberInterface
         }
 
         if ($this->env === 'dev') {
-            $response = new Response(500, [], $event->getException()->getMessage());
+            $response = new Response($event->getException()->getMessage(), 500);
         } else {
-            $response = new Response(500, [], 'Im sorry, try again later.');
+            $response = new Response('Im sorry, try again later.', 500);
         }
 
         $event->setResponse($response);

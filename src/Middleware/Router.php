@@ -7,8 +7,8 @@ use App\Controller\ExceptionController;
 use App\Controller\FooController;
 use App\Controller\StartpageController;
 use App\Event\GetResponseEvent;
-use Nyholm\Psr7\Response;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\Response;
 
 class Router implements EventSubscriberInterface
 {
@@ -24,7 +24,7 @@ class Router implements EventSubscriberInterface
     public function onRequest(GetResponseEvent $event)
     {
         $request = $event->getRequest();
-        $uri = $request->getUri()->getPath();
+        $uri = $request->getPathInfo();
 
         switch ($uri) {
             case '/':
@@ -40,8 +40,7 @@ class Router implements EventSubscriberInterface
                 $response = $this->controllers[ExceptionController::class]->run($request);
                 break;
             default:
-                $response = new Response(404);
-                $response->getBody()->write('Not Found');
+                $response = new Response('Not Found', 404);
                 break;
         }
 

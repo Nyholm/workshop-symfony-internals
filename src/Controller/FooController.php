@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use Nyholm\Psr7\Response;
-use Psr\Http\Message\RequestInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class FooController
 {
-    public function run(RequestInterface $request)
+    public function run(Request $request)
     {
-        return new Response(200, [], 'Foo page');
+        return new Response('Foo page');
     }
 }

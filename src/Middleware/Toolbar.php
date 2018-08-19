@@ -4,7 +4,6 @@ namespace App\Middleware;
 
 use App\DataCollector\CacheDataCollector;
 use App\Event\FilterResponseEvent;
-use Nyholm\Psr7\Factory\Psr17Factory;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class Toolbar implements EventSubscriberInterface
@@ -23,16 +22,15 @@ class Toolbar implements EventSubscriberInterface
         $calls = $this->cacheDataCollector->getCalls();
         $getItemCalls = count($calls['getItem']);
 
-        $content = $response->getBody()->__toString();
+        $content = $response->getContent();
         $toolbar = <<<HTML
 <br><br><br><hr>
-URL: {$request->getUri()->getPath()}<br> 
-IP: {$request->getServerParams()['REMOTE_ADDR']}<br> 
+URL: {$request->getPathInfo()}<br> 
+IP: {$request->server->get('REMOTE_ADDR')}<br> 
 Cache calls: {$getItemCalls}<br>
 HTML;
 
-        $stream = (new Psr17Factory())->createStream($content.$toolbar);
-        $response = $response->withBody($stream);
+        $response = $response->setContent($content.$toolbar);
 
         $event->setResponse($response);
     }

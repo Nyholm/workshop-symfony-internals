@@ -4,8 +4,8 @@ namespace App\Middleware;
 
 use App\Event\GetResponseEvent;
 use App\Security\TokenStorage;
-use Nyholm\Psr7\Response;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\Response;
 
 class Authentication implements EventSubscriberInterface
 {
@@ -22,16 +22,16 @@ class Authentication implements EventSubscriberInterface
     public function onRequest(GetResponseEvent $event)
     {
         $request = $event->getRequest();
-        $uri = $request->getUri()->getPath();
-        $auth = $request->getServerParams()['PHP_AUTH_USER'] ?? '';
-        $pass = $request->getServerParams()['PHP_AUTH_PW'] ?? '';
+        $uri = $request->getPathInfo();
+        $auth = $request->server->get('PHP_AUTH_USER', '');
+        $pass = $request->server->get('PHP_AUTH_PW', '');
 
         if ($uri !== '/admin') {
             return;
         }
 
         if (empty($auth)) {
-            $event->setResponse(new Response(401, ['WWW-Authenticate' => 'Basic realm="Admin area"'], 'This page is protected'));
+            $event->setResponse(new Response('This page is protected', 401, ['WWW-Authenticate' => 'Basic realm="Admin area"']));
 
             return;
         }

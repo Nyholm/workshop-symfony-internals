@@ -4,8 +4,8 @@ namespace App\Middleware;
 
 use App\Event\GetResponseEvent;
 use App\Security\Voter\VoterInterface;
-use Nyholm\Psr7\Response;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\Response;
 
 class SecurityVoters implements EventSubscriberInterface
 {
@@ -37,7 +37,7 @@ class SecurityVoters implements EventSubscriberInterface
         }
 
         if ($deny > 0) {
-            $event->setResponse(new Response(403, [], 'Forbidden'));
+            $event->setResponse(new Response('Forbidden', 403));
             $event->stopPropagation();
         }
     }

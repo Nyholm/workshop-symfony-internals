@@ -4,10 +4,10 @@ namespace App\Middleware;
 
 use App\Event\FilterResponseEvent;
 use App\Event\GetResponseEvent;
-use Nyholm\Psr7\Response;
 use Psr\Cache\CacheItemPoolInterface;
-use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class Cache implements EventSubscriberInterface
 {
@@ -32,7 +32,7 @@ class Cache implements EventSubscriberInterface
         $cacheItem = $this->getCacheItem($event->getRequest());
 
         if ($cacheItem->isHit()) {
-            $event->setResponse(new Response(200, [], $cacheItem->get()));
+            $event->setResponse(new Response($cacheItem->get()));
 
             // Interrupt the middleware chain
             $event->stopPropagation();
@@ -46,7 +46,7 @@ class Cache implements EventSubscriberInterface
 
         // Save the response in cache
         $cacheItem
-            ->set($response->getBody()->__toString())
+            ->set($response->getContent())
             ->expiresAfter($this->ttl);
         $this->cache->save($cacheItem);
 
@@ -61,10 +61,10 @@ class Cache implements EventSubscriberInterface
         ];
     }
 
-    private function getCacheItem(ServerRequestInterface $request): \Psr\Cache\CacheItemInterface
+    private function getCacheItem(Request $request): \Psr\Cache\CacheItemInterface
     {
-        $uri = $request->getUri();
-        $cacheKey = 'url'.sha1($uri->getPath().'?'.$uri->getQuery());
+        $uri = $request->getPathInfo().$request->getQueryString();
+        $cacheKey = 'url'.sha1($uri);
         $cacheItem = $this->cache->getItem($cacheKey);
 
         return $cacheItem;
