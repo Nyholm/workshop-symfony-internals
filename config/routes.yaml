@@ -1,0 +1,15 @@
+startpage:
+  path: /
+  controller: App\Controller\StartpageController::run
+
+foo:
+  path: /foo
+  controller: App\Controller\FooController::run
+
+admin:
+  path: /admin
+  controller: App\Controller\AdminController::run
+
+exception:
+  path: /exception
+  controller: App\Controller\ExceptionController::run
