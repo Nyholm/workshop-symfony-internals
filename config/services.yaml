@@ -1,4 +1,3 @@
-# services.yaml
 services:
   cache:
     alias: cache.filesystem
@@ -16,11 +15,37 @@ services:
 
   flysystem.local_adapter:
     class: League\Flysystem\Adapter\Local
-    arguments: ['%kernel.project_dir%/var/cache/%kernel.environment%/fs_cache']
+    arguments: ['%kernel.project_dir%/var/cache/%kernel.environment%/fs']
 
   middleware.cache:
     class: App\Middleware\Cache
     arguments: ['@cache']
+    public: true
+
+  middleware.auth:
+    class: App\Middleware\Authentication
+    arguments: ['@security.token_storage']
+    public: true
+
+  middleware.security:
+    class: App\Middleware\SecurityVoters
+    public: true
+    arguments:
+      - ['@security.voter.admin', '@security.voter.image']
+
+  security.token_storage:
+    class: App\Security\TokenStorage
+
+  security.voter.admin:
+    class: App\Security\Voter\AdminVoter
+    arguments: ['@security.token_storage']
+
+  security.voter.image:
+    class: App\Security\Voter\ImageVoter
+
+  controller.admin:
+    class: App\Controller\AdminController
+    arguments: ['@security.token_storage']
     public: true
 
   controller.startpage:
@@ -30,8 +55,3 @@ services:
   controller.foo:
     class: App\Controller\FooController
     public: true
-
-
-
-
-

@@ -36,8 +36,10 @@ class Kernel
     {
         $this->boot();
 
+        $middlewares[] = $this->container->get('middleware.auth');
+        $middlewares[] = $this->container->get('middleware.security');
         $middlewares[] = $this->container->get('middleware.cache');
-        $middlewares[] = new \App\Middleware\Router();
+        $middlewares[] = new \App\Middleware\Router($this->container);
 
         $runner = (new \Relay\RelayBuilder())->newInstance($middlewares);
 
@@ -58,12 +60,14 @@ class Kernel
             $container = new ContainerBuilder();
             $container->setParameter('kernel.project_dir', $this->getProjectDir());
             $container->setParameter('kernel.environment', $this->environment);
+
             $loader = new YamlFileLoader($container, new FileLocator($this->getProjectDir().'/config'));
             try {
                 $loader->load('services.yaml');
                 $loader->load('services_'.$this->environment.'.yaml');
             } catch (FileLocatorFileNotFoundException $e) {
             }
+
             $container->compile();
 
             //dump the container
@@ -72,6 +76,7 @@ class Kernel
         }
 
         $this->container = $container;
+
         $this->booted = true;
     }
 
