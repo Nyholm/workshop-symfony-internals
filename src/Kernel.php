@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App;
 
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
+use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
@@ -12,6 +13,8 @@ use Symfony\Component\Routing\RouteCollectionBuilder;
 
 class Kernel extends BaseKernel
 {
+    use MicroKernelTrait;
+
     public function registerBundles()
     {
         return [
@@ -19,31 +22,17 @@ class Kernel extends BaseKernel
         ];
     }
 
-    public function registerContainerConfiguration(LoaderInterface $loader)
-    {
-        $loader->load(function (ContainerBuilder $container) use ($loader) {
-            $container->loadFromExtension('framework', [
-                'router' => [
-                    'resource' => 'kernel::loadRoutes',
-                    'type' => 'service',
-                ],
-            ]);
-
-            $confDir = $this->getProjectDir().'/config';
-            $loader->load($confDir.'/services.yaml');
-            $loader->load($confDir.'/services_'.$this->environment.'.yaml');
-
-            $container->addObjectResource($this);
-        });
-    }
-
-    public function loadRoutes(LoaderInterface $loader)
+    protected function configureContainer(ContainerBuilder $c, LoaderInterface $loader)
     {
         $confDir = $this->getProjectDir().'/config';
-        $routes = new RouteCollectionBuilder($loader);
-        $routes->import($confDir.'/routes.yaml');
+        $loader->load($confDir.'/services.yaml');
+        $loader->load($confDir.'/services_'.$this->environment.'.yaml');
+    }
 
-        return $routes->build();
+    protected function configureRoutes(RouteCollectionBuilder $routes)
+    {
+        $confDir = $this->getProjectDir().'/config';
+        $routes->import($confDir.'/routes.yaml');
     }
 
     public function getCacheDir()
