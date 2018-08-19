@@ -190,7 +190,34 @@ components.
 
 
 ### Exercise 1: Use Autowiring
+
+Branch: [9-exception](/../../tree/9-exception)
+
+(Only do this if you got time and energy. This exercise could easily be skipped.)
+
+We love autowiring. It makes our service configuration small and nice. Try to
+autowire as many services as you can. The [Symfony documentation](https://symfony.com/doc/current/service_container.html)
+may be a good reference.
+
 ### Exercise 2: Add CLI
+
+Branch: [21-autowire](/../../tree/21-autowire)
+
+The Command Line Interface is just another frontend controller. The code is similar
+to our index.php. You should require `symfony/console` and create a `./bin/console`
+file.
+
+You should also create a small command class to test your `./bin/console`.
+
+#### Exercise 2 - Bonus
+
+Make sure you can register your command in the service container. This allows 
+command classes to use dependency injection as normal. 
+
+**Hint:** There is a 
+
+ 
+
 ### Exercise 3: Event Dispatcher
 ### Exercise 4: HTTP Foundation
 ### Exercise 5: Cache
