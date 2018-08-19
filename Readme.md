@@ -209,7 +209,7 @@ file.
 
 You should also create a small command class to test your `./bin/console`.
 
-#### Exercise 2 - Bonus
+#### Bonus exercise
 
 Make sure you can register your command in the service container. This allows 
 command classes to use dependency injection as normal. 
@@ -292,6 +292,47 @@ if you register a `http_kernel` service:
 
 ### Exercise 7: Router
 
-Branch: [25-cache](/../../tree/25-cache)
+Branch: [26-http-kernel](/../../tree/26-http-kernel)
 
-### Exercise 8: Framework Bundle
+Symfony 4.1 has the quickest router implemented in PHP. Lets start using it. 
+We want to remove our `Router` middleware and define our routes in `./config/routes.yaml`
+instead. We are not using the FrameworkBundle just yet so we need to look at 
+the documentation for the [routing **component**](http://symfony.com/doc/current/components/routing.html#the-all-in-one-router).
+
+**Note:** Make sure to register `Symfony\Component\HttpKernel\EventListener\RouterListener`
+in the service container. 
+
+#### Exercise 8: HttpKernel (important)
+
+Branch: [27-router](/../../tree/27-router)
+
+The `Symfony\Component\HttpKernel\EventListener\RouterListener` listens to the `kernel.request`
+event. Debug the [`HttpKernel::handleRaw`](https://github.com/symfony/symfony/blob/v4.1.3/src/Symfony/Component/HttpKernel/HttpKernel.php#L119-L169)
+function to see what is happening there. Prepare short answers  to the following
+questions: 
+
+- What did `RouterListener` do to the `$request` after the `kernel.request` event has
+been dispatched? (line 125)
+- What is the purpose of `$this->resolver->getController($request)`? (line 132)
+- What is the purpose of `$this->argumentResolver->getArguments($request, $controller)`? (line 141)
+- What does this line do `$response = \call_user_func_array($controller, $arguments)`? (line 149)
+
+### Exercise 9: Framework Bundle
+
+Branch: [27-router](/../../tree/27-router)
+
+We are almost there. Let's start using the FrameworkBundle. This bundle helps you register
+a lot of services. Make sure to enable the FrameworkBundle in `App\Kernel`. What can 
+you remove now? Maybe the router configuration? 
+
+You could also have a look at `Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait`. It
+could be a good fit for our `App\Kernel`.
+
+### Exercise 10: Symfony Flex
+
+Branch: [28-framework-bundle](/../../tree/28-framework-bundle)
+
+This is the end of the workshop. You could create a new Symfony Flex probject with
+`composer create-project symfony/skeleton my_projecet`. Compare the differencis between a fresh
+install of symfony with the framework you built. 
+
