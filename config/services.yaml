@@ -29,6 +29,18 @@ services:
 
   # ---------------
 
+  http_kernel:
+    class: Symfony\Component\HttpKernel\HttpKernel
+    public: true
+    arguments:
+      - '@Symfony\Component\EventDispatcher\EventDispatcherInterface'
+      - '@Symfony\Component\HttpKernel\Controller\ControllerResolver'
+
+  Symfony\Component\HttpKernel\Controller\ControllerResolver: ~
+
+
+  # ---------------
+
   cache:
     alias: cache.filesystem
 

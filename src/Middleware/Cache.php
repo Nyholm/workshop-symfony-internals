@@ -2,12 +2,12 @@
 
 namespace App\Middleware;
 
-use App\Event\FilterResponseEvent;
-use App\Event\GetResponseEvent;
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
+use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 
 class Cache implements EventSubscriberInterface
 {

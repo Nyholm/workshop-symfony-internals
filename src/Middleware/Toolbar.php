@@ -3,8 +3,8 @@
 namespace App\Middleware;
 
 use App\DataCollector\CacheDataCollector;
-use App\Event\FilterResponseEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 
 class Toolbar implements EventSubscriberInterface
 {

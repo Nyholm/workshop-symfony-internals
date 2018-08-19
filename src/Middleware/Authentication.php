@@ -2,10 +2,10 @@
 
 namespace App\Middleware;
 
-use App\Event\GetResponseEvent;
 use App\Security\TokenStorage;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 
 class Authentication implements EventSubscriberInterface
 {

@@ -2,9 +2,9 @@
 
 namespace App\Middleware;
 
-use App\Event\GetResponseForExceptionEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 
 class ExceptionHandler implements EventSubscriberInterface
 {
