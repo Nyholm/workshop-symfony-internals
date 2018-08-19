@@ -33,16 +33,11 @@ services:
     alias: cache.filesystem
 
   cache.void:
-    class: Cache\Adapter\Void\VoidCachePool
+    class: Symfony\Component\Cache\Adapter\NullAdapter
 
   cache.filesystem:
-    class: Cache\Adapter\Filesystem\FilesystemCachePool
-
-  League\Flysystem\Filesystem:
-    arguments: ['@League\Flysystem\Adapter\Local']
-
-  League\Flysystem\Adapter\Local:
-    arguments: ['%kernel.project_dir%/var/cache/%kernel.environment%/fs']
+    class: Symfony\Component\Cache\Adapter\FilesystemAdapter
+    arguments: ['ns', 3600, '%kernel.project_dir%/var/cache/%kernel.environment%/fs']
 
   App\Middleware\SecurityVoters:
     public: true
