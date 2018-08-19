@@ -2,12 +2,14 @@
 
 namespace App\Middleware;
 
+use App\Event\GetResponseEvent;
 use App\Security\Voter\VoterInterface;
 use Nyholm\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class SecurityVoters implements MiddlewareInterface
+class SecurityVoters implements EventSubscriberInterface
 {
     /** @var  VoterInterface[] */
     private $voters;
@@ -17,14 +19,15 @@ class SecurityVoters implements MiddlewareInterface
         $this->voters = $voters;
     }
 
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next)
+    public function onRequest(GetResponseEvent $event)
     {
+        $request = $event->getRequest();
         $deny = 0;
         foreach ($this->voters as $voter) {
             $result = $voter->vote($request);
             switch ($result) {
                 case VoterInterface::ACCESS_GRANTED:
-                    return $next($request, $response);
+                    return;
 
                 case VoterInterface::ACCESS_DENIED:
                     ++$deny;
@@ -36,9 +39,14 @@ class SecurityVoters implements MiddlewareInterface
         }
 
         if ($deny > 0) {
-            return new Response(403, [], 'Forbidden');
+            $event->setResponse(new Response(403, [], 'Forbidden'));
+            $event->stopPropagation();
         }
+    }
 
-        return $next($request, $response);
+
+    public static function getSubscribedEvents()
+    {
+        return ['kernel.request' => ['onRequest', 90]];
     }
 }

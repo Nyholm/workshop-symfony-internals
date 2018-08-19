@@ -2,11 +2,15 @@
 
 namespace App\Middleware;
 
+use App\Event\FilterResponseEvent;
+use App\Event\GetResponseEvent;
+use Nyholm\Psr7\Response;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class Cache implements MiddlewareInterface
+class Cache implements EventSubscriberInterface
 {
     /**
      * @var CacheItemPoolInterface
@@ -24,21 +28,22 @@ class Cache implements MiddlewareInterface
         $this->ttl = 300;
     }
 
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next)
+    public function onRequest(GetResponseEvent $event)
     {
-        $uri = $request->getUri();
-        $cacheKey = 'url'.sha1($uri->getPath().'?'.$uri->getQuery());
-        $cacheItem = $this->cache->getItem($cacheKey);
+        $cacheItem = $this->getCacheItem($event->getRequest());
 
         if ($cacheItem->isHit()) {
-            $response->getBody()->write($cacheItem->get());
+            $event->setResponse(new Response(200, [], $cacheItem->get()));
 
             // Interrupt the middleware chain
-            return $response;
+            $event->stopPropagation();
         }
+    }
 
-        // Continue the chain of middlewares and get a response
-        $response = $next($request, $response);
+    public function onResponse(FilterResponseEvent $event)
+    {
+        $cacheItem = $this->getCacheItem($event->getRequest());
+        $response= $event->getResponse();
 
         // Save the response in cache
         $cacheItem
@@ -47,5 +52,23 @@ class Cache implements MiddlewareInterface
         $this->cache->save($cacheItem);
 
         return $response;
+    }
+
+
+    public static function getSubscribedEvents()
+    {
+        return [
+            'kernel.request' => ['onRequest'],
+            'kernel.response' => ['onResponse', -10]
+        ];
+    }
+
+    private function getCacheItem(ServerRequestInterface $request): \Psr\Cache\CacheItemInterface
+    {
+        $uri = $request->getUri();
+        $cacheKey = 'url'.sha1($uri->getPath().'?'.$uri->getQuery());
+        $cacheItem = $this->cache->getItem($cacheKey);
+
+        return $cacheItem;
     }
 }

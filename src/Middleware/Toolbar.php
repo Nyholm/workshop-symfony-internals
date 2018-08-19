@@ -3,12 +3,14 @@
 namespace App\Middleware;
 
 use App\DataCollector\CacheDataCollector;
+use App\Event\FilterResponseEvent;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Nyholm\Psr7\Factory\StreamFactory;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class Toolbar implements MiddlewareInterface
+class Toolbar implements EventSubscriberInterface
 {
     private $cacheDataCollector;
 
@@ -17,8 +19,10 @@ class Toolbar implements MiddlewareInterface
         $this->cacheDataCollector = $cacheDataCollector;
     }
 
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next)
+    public function onResponse(FilterResponseEvent $event)
     {
+        $response = $event->getResponse();
+        $request = $event->getRequest();
         $calls = $this->cacheDataCollector->getCalls();
         $getItemCalls = count($calls['getItem']);
 
@@ -33,6 +37,11 @@ HTML;
         $stream = (new Psr17Factory())->createStream($content.$toolbar);
         $response = $response->withBody($stream);
 
-        return $next($request, $response);
+        $event->setResponse($response);
+    }
+
+    public static function getSubscribedEvents()
+    {
+        return ['kernel.response' => ['onResponse', -110]];
     }
 }

@@ -4,20 +4,22 @@ declare(strict_types=1);
 
 namespace App;
 
-use App\Middleware\Authentication;
-use App\Middleware\Cache;
-use App\Middleware\ExceptionHandler;
-use App\Middleware\SecurityVoters;
-use App\Middleware\Toolbar;
-use Nyholm\Psr7\Response;
+use App\Event\FilterResponseEvent;
+use App\Event\GetResponseEvent;
+use App\Event\GetResponseForExceptionEvent;
+use App\Exception\HttpNotFoundException;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\Config\Exception\FileLocatorFileNotFoundException;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+use Symfony\Component\EventDispatcher\DependencyInjection\RegisterListenersPass;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class Kernel
 {
@@ -41,18 +43,25 @@ class Kernel
     {
         $this->boot();
 
-        $middlewares[] = $this->container->get(ExceptionHandler::class);
-        $middlewares[] = $this->container->get(Authentication::class);
-        $middlewares[] = $this->container->get(SecurityVoters::class);
-        $middlewares[] = $this->container->get(Cache::class);
-        $middlewares[] = new \App\Middleware\Router($this->container);
-        if ($this->debug) {
-            $middlewares[] = $this->container->get(Toolbar::class);
+        $dispatcher = $this->container->get(EventDispatcherInterface::class);
+        try {
+            $getResponseEvent = new GetResponseEvent($request);
+            $dispatcher->dispatch('kernel.request', $getResponseEvent);
+
+            if (!$getResponseEvent->hasResponse()) {
+                throw new HttpNotFoundException($request);
+            }
+
+            $filterResponseEvent = new FilterResponseEvent($request, $getResponseEvent->getResponse());
+            $dispatcher->dispatch('kernel.response', $filterResponseEvent);
+            $response = $filterResponseEvent->getResponse();
+        } catch (\Throwable $t) {
+            $exceptionEvent = new GetResponseForExceptionEvent($request, $t);
+            $dispatcher->dispatch('kernel.exception', $exceptionEvent);
+            $response = $exceptionEvent->getResponse();
         }
 
-        $runner = (new \Relay\RelayBuilder())->newInstance($middlewares);
-
-        return $runner($request, new Response());
+        return $response;
     }
 
     public function boot()
@@ -69,6 +78,11 @@ class Kernel
             $container = new ContainerBuilder();
             $container->setParameter('kernel.project_dir', $this->getProjectDir());
             $container->setParameter('kernel.environment', $this->environment);
+
+            $container->registerForAutoconfiguration(EventSubscriberInterface::class)
+                ->addTag('kernel.event_subscriber');
+            $container->addCompilerPass(new RegisterListenersPass(EventDispatcherInterface::class), PassConfig::TYPE_BEFORE_REMOVING);
+
 
             $loader = new YamlFileLoader($container, new FileLocator($this->getProjectDir().'/config'));
             try {

@@ -1,6 +1,7 @@
 services:
   _defaults:
     autowire: true
+    autoconfigure: true
     public: false
     bind:
       Psr\Cache\CacheItemPoolInterface: '@cache'
@@ -13,7 +14,7 @@ services:
   App\Controller\:
     resource: '../src/Controller/*'
     public: true
-    tags: ['controller.service_arguments']
+    tags: ['controller.service_arguments', 'app.controller']
 
   App\Security\Voter\:
     resource: '../src/Security/Voter/*'
@@ -22,8 +23,9 @@ services:
   App\Middleware\:
     resource: '../src/Middleware/*'
     exclude: '../src/Middleware/{Router.php}'
-    public: true
 
+  App\Middleware\Router:
+    arguments: [!tagged app.controller]
 
   # ---------------
 
@@ -49,3 +51,10 @@ services:
   App\DataCollector\CacheDataCollector:
     decorates: 'cache'
     arguments: ['@App\DataCollector\CacheDataCollector.inner']
+
+  Symfony\Component\EventDispatcher\EventDispatcher:
+    public: true
+
+  Symfony\Component\EventDispatcher\EventDispatcherInterface:
+    alias: Symfony\Component\EventDispatcher\EventDispatcher
+    public: true
