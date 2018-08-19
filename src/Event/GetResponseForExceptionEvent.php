@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Event;
 
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\EventDispatcher\Event;
 

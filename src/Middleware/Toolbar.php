@@ -5,9 +5,6 @@ namespace App\Middleware;
 use App\DataCollector\CacheDataCollector;
 use App\Event\FilterResponseEvent;
 use Nyholm\Psr7\Factory\Psr17Factory;
-use Nyholm\Psr7\Factory\StreamFactory;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class Toolbar implements EventSubscriberInterface

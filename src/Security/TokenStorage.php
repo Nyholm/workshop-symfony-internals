@@ -23,13 +23,12 @@ class TokenStorage
     {
         $count = count($this->tokens);
 
-        if (isset($this->tokens[$count-1])) {
-            return $this->tokens[$count-1];
+        if (isset($this->tokens[$count - 1])) {
+            return $this->tokens[$count - 1];
         }
 
         return null;
     }
-
 
     /**
      * @param mixed $tokens

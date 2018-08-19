@@ -5,13 +5,11 @@ namespace App\Middleware;
 use App\Event\GetResponseEvent;
 use App\Security\Voter\VoterInterface;
 use Nyholm\Psr7\Response;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class SecurityVoters implements EventSubscriberInterface
 {
-    /** @var  VoterInterface[] */
+    /** @var VoterInterface[] */
     private $voters;
 
     public function __construct(iterable $voters)
@@ -43,7 +41,6 @@ class SecurityVoters implements EventSubscriberInterface
             $event->stopPropagation();
         }
     }
-
 
     public static function getSubscribedEvents()
     {

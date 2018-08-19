@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace App\Event;
 
-use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
- * Do changes to the response
+ * Do changes to the response.
  */
 class FilterResponseEvent extends KernelEvent
 {

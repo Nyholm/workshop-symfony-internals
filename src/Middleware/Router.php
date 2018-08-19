@@ -8,9 +8,6 @@ use App\Controller\FooController;
 use App\Controller\StartpageController;
 use App\Event\GetResponseEvent;
 use Nyholm\Psr7\Response;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class Router implements EventSubscriberInterface

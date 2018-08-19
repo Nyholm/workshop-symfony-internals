@@ -83,7 +83,6 @@ class Kernel
                 ->addTag('kernel.event_subscriber');
             $container->addCompilerPass(new RegisterListenersPass(EventDispatcherInterface::class), PassConfig::TYPE_BEFORE_REMOVING);
 
-
             $loader = new YamlFileLoader($container, new FileLocator($this->getProjectDir().'/config'));
             try {
                 $loader->load('services.yaml');
@@ -95,7 +94,7 @@ class Kernel
 
             //dump the container
             @mkdir(dirname($containerDumpFile), 0777, true);
-            file_put_contents($containerDumpFile, (new PhpDumper($container))->dump(array('class' => 'CachedContainer')));
+            file_put_contents($containerDumpFile, (new PhpDumper($container))->dump(['class' => 'CachedContainer']));
         }
 
         $this->container = $container;

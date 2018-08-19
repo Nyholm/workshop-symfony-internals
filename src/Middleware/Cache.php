@@ -6,7 +6,6 @@ use App\Event\FilterResponseEvent;
 use App\Event\GetResponseEvent;
 use Nyholm\Psr7\Response;
 use Psr\Cache\CacheItemPoolInterface;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -43,7 +42,7 @@ class Cache implements EventSubscriberInterface
     public function onResponse(FilterResponseEvent $event)
     {
         $cacheItem = $this->getCacheItem($event->getRequest());
-        $response= $event->getResponse();
+        $response = $event->getResponse();
 
         // Save the response in cache
         $cacheItem
@@ -54,12 +53,11 @@ class Cache implements EventSubscriberInterface
         return $response;
     }
 
-
     public static function getSubscribedEvents()
     {
         return [
             'kernel.request' => ['onRequest'],
-            'kernel.response' => ['onResponse', -10]
+            'kernel.response' => ['onResponse', -10],
         ];
     }
 

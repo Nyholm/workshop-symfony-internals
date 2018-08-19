@@ -4,8 +4,6 @@ namespace App\Middleware;
 
 use App\Event\GetResponseForExceptionEvent;
 use Nyholm\Psr7\Response;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class ExceptionHandler implements EventSubscriberInterface
@@ -31,7 +29,6 @@ class ExceptionHandler implements EventSubscriberInterface
 
         $event->setResponse($response);
     }
-
 
     public static function getSubscribedEvents()
     {
