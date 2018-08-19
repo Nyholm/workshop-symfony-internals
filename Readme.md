@@ -191,8 +191,8 @@ components.
 
 ### Exercise 1: Use Autowiring
 ### Exercise 2: Add CLI
-### Exercise 3: HTTP Foundation
-### Exercise 4: Event Dispatcher
+### Exercise 3: Event Dispatcher
+### Exercise 4: HTTP Foundation
 ### Exercise 5: Cache
 ### Exercise 6: HTTP Kernel
 ### Exercise 7: Security
