@@ -4,31 +4,30 @@ declare(strict_types=1);
 
 namespace App;
 
+use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Component\Config\Loader\LoaderInterface;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\DependencyInjection\AddConsoleCommandPass;
-use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\EventDispatcher\DependencyInjection\RegisterListenersPass;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
+use Symfony\Component\Routing\RouteCollectionBuilder;
 
 class Kernel extends BaseKernel
 {
     public function registerBundles()
     {
-        return [];
+        return [
+            new FrameworkBundle(),
+        ];
     }
 
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
         $loader->load(function (ContainerBuilder $container) use ($loader) {
-            $container->registerForAutoconfiguration(EventSubscriberInterface::class)->addTag('kernel.event_subscriber');
-            $container->registerForAutoconfiguration(Command::class)->addTag('console.command');
-
-            $container->addCompilerPass(new RegisterListenersPass(EventDispatcherInterface::class), PassConfig::TYPE_BEFORE_REMOVING);
-            $container->addCompilerPass(new AddConsoleCommandPass());
+            $container->loadFromExtension('framework', [
+                'router' => [
+                    'resource' => 'kernel::loadRoutes',
+                    'type' => 'service',
+                ],
+            ]);
 
             $confDir = $this->getProjectDir().'/config';
             $loader->load($confDir.'/services.yaml');
@@ -36,6 +35,15 @@ class Kernel extends BaseKernel
 
             $container->addObjectResource($this);
         });
+    }
+
+    public function loadRoutes(LoaderInterface $loader)
+    {
+        $confDir = $this->getProjectDir().'/config';
+        $routes = new RouteCollectionBuilder($loader);
+        $routes->import($confDir.'/routes.yaml');
+
+        return $routes->build();
     }
 
     public function getCacheDir()

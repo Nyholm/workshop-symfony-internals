@@ -1,3 +1,6 @@
+parameters:
+  kernel.secret: 'foobar'
+
 services:
   _defaults:
     autowire: true
@@ -26,34 +29,6 @@ services:
 
   App\Middleware\Router:
     arguments: [!tagged app.controller]
-
-  # ---------------
-
-  http_kernel:
-    class: Symfony\Component\HttpKernel\HttpKernel
-    public: true
-    arguments:
-      - '@Symfony\Component\EventDispatcher\EventDispatcherInterface'
-      - '@Symfony\Component\HttpKernel\Controller\ControllerResolver'
-
-  Symfony\Component\HttpKernel\Controller\ControllerResolver: ~
-
-  Symfony\Component\HttpFoundation\RequestStack: ~
-  Symfony\Component\HttpKernel\EventListener\RouterListener:
-    arguments: ['@router', '@Symfony\Component\HttpFoundation\RequestStack']
-
-  router:
-    class: Symfony\Component\Routing\Router
-    arguments: ['@router.loader.yaml', 'routes.yaml', {cache_dir: '%kernel.project_dir%/var/cache/%kernel.environment%/router'}]
-
-  router.locator:
-    class: Symfony\Component\Config\FileLocator
-    arguments:
-      - ['%kernel.project_dir%/config']
-
-  router.loader.yaml:
-    class: Symfony\Component\Routing\Loader\YamlFileLoader
-    arguments: ['@router.locator']
 
   # ---------------
 
