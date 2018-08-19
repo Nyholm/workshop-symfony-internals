@@ -1,0 +1,23 @@
+#!/usr/bin/env php
+<?php
+
+use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Input\ArgvInput;
+
+set_time_limit(0);
+
+require __DIR__.'/../vendor/autoload.php';
+
+$input = new ArgvInput();
+$env = $input->getParameterOption(['--env', '-e'], $_SERVER['APP_ENV'] ?? 'dev', true);
+
+$application = new Application();
+$kernel = new \App\Kernel('dev', true);
+$kernel->boot();
+
+$loader = $kernel->getContainer()->get('console.command_loader');
+foreach ($loader->getNames() as $commandName) {
+  $application->add($loader->get($commandName));
+}
+
+$application->run($input);

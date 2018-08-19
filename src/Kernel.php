@@ -13,6 +13,8 @@ use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\Config\Exception\FileLocatorFileNotFoundException;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\DependencyInjection\AddConsoleCommandPass;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
@@ -79,9 +81,11 @@ class Kernel
             $container->setParameter('kernel.project_dir', $this->getProjectDir());
             $container->setParameter('kernel.environment', $this->environment);
 
-            $container->registerForAutoconfiguration(EventSubscriberInterface::class)
-                ->addTag('kernel.event_subscriber');
+            $container->registerForAutoconfiguration(EventSubscriberInterface::class)->addTag('kernel.event_subscriber');
+            $container->registerForAutoconfiguration(Command::class)->addTag('console.command');
+
             $container->addCompilerPass(new RegisterListenersPass(EventDispatcherInterface::class), PassConfig::TYPE_BEFORE_REMOVING);
+            $container->addCompilerPass(new AddConsoleCommandPass());
 
             $loader = new YamlFileLoader($container, new FileLocator($this->getProjectDir().'/config'));
             try {
@@ -100,6 +104,11 @@ class Kernel
         $this->container = $container;
 
         $this->booted = true;
+    }
+
+    public function getContainer(): Container
+    {
+        return $this->container;
     }
 
     private function getProjectDir()
