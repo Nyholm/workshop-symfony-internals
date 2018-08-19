@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "3ac2cf34df7a66247af5940b03050e6b",
+    "content-hash": "06d006589d7de3bd304cacfbe4105599",
     "packages": [
         {
             "name": "cache/adapter-common",
@@ -912,51 +912,6 @@
                 "simple-cache"
             ],
             "time": "2017-10-23T01:57:42+00:00"
-        },
-        {
-            "name": "relay/relay",
-            "version": "1.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/relayphp/Relay.Relay.git",
-                "reference": "e835fc45351b7a92a6fdf2a36be7bd59ef56c8ae"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/relayphp/Relay.Relay/zipball/e835fc45351b7a92a6fdf2a36be7bd59ef56c8ae",
-                "reference": "e835fc45351b7a92a6fdf2a36be7bd59ef56c8ae",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.5.0",
-                "psr/http-message": "~1.0"
-            },
-            "require-dev": {
-                "zendframework/zend-diactoros": "~1.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Relay\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Relay.Relay Contributors",
-                    "homepage": "https://github.com/relayphp/Relay.Relay/contributors"
-                }
-            ],
-            "description": "A PSR-7 middleware dispatcher.",
-            "homepage": "https://github.com/relayphp/Relay.Relay",
-            "keywords": [
-                "middleware",
-                "psr-7"
-            ],
-            "time": "2015-12-17T18:18:30+00:00"
         },
         {
             "name": "symfony/config",
