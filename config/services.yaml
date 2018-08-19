@@ -16,7 +16,7 @@ services:
 
   flysystem.local_adapter:
     class: League\Flysystem\Adapter\Local
-    arguments: ['%kernel.project_dir%/var/cache/%kernel.environment%/fs_cache']
+    arguments: ['%kernel.project_dir%/var/cache/%kernel.environment%/fs']
 
   middleware.cache:
     class: App\Middleware\Cache
