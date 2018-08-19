@@ -1,5 +1,5 @@
 {
-    "name": "nyholm/3-controller",
+    "name": "nyholm/4-event-loop",
     "authors": [
         {
             "name": "Tobias Nyholm",
@@ -13,6 +13,7 @@
     },
     "require": {
         "nyholm/psr7": "^1.0",
-        "nyholm/psr7-server": "^0.2.1"
+        "nyholm/psr7-server": "^0.2.1",
+        "relay/relay": "1.1"
     }
 }

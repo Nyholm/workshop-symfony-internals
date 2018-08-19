@@ -9,15 +9,12 @@ require __DIR__.'/../vendor/autoload.php';
 $psr17Factory = new Psr17Factory();
 $creator = new ServerRequestCreator($psr17Factory, $psr17Factory, $psr17Factory, $psr17Factory);
 $request = $creator->fromGlobals();
+$response = new Response();
 
-$uri = $request->getUri()->getPath();
-if ($uri === '/') {
-    $response = (new \App\Controller\StartpageController())->run($request);
-} elseif ($uri === '/foo') {
-    $response = (new \App\Controller\FooController())->run($request);
-} else {
-    $response = new Response(404, [], 'Not found');
-}
+$middlewares[] = new \App\Middleware\Router();
+
+$runner = (new \Relay\RelayBuilder())->newInstance($middlewares);
+$response = $runner($request, $response);
 
 // Send response
 echo $response->getBody();
