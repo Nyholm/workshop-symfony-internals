@@ -36,6 +36,7 @@ class Kernel
     {
         $this->boot();
 
+        $middlewares[] = $this->container->get('middleware.exception');
         $middlewares[] = $this->container->get('middleware.auth');
         $middlewares[] = $this->container->get('middleware.security');
         $middlewares[] = $this->container->get('middleware.cache');

@@ -22,6 +22,11 @@ services:
     arguments: ['@cache']
     public: true
 
+  middleware.exception:
+    class: App\Middleware\ExceptionHandler
+    arguments: ['%kernel.environment%']
+    public: true
+
   middleware.auth:
     class: App\Middleware\Authentication
     arguments: ['@security.token_storage']
@@ -46,6 +51,10 @@ services:
   controller.admin:
     class: App\Controller\AdminController
     arguments: ['@security.token_storage']
+    public: true
+
+  controller.exception:
+    class: App\Controller\ExceptionController
     public: true
 
   controller.startpage:
