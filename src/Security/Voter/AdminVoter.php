@@ -11,7 +11,7 @@ class AdminVoter implements VoterInterface
 {
     private $tokenStorage;
 
-    public function __construct(TokenStorage$tokenStorage)
+    public function __construct(TokenStorage $tokenStorage)
     {
         $this->tokenStorage = $tokenStorage;
     }
