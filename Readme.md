@@ -97,7 +97,18 @@ Install `symfony/dependency-injection` and create `src/Kernelphp` that should be
 responsible for building the container and building the middleware array. A good
 idea is to only have one public function: `Kernel::handle(RequestInterface $request): ResponseInterface`. 
 
+The `Kernel` should be responsible for "building" a container which all our services
+are loaded. (See [documentation](https://symfony.com/doc/current/components/dependency_injection.html#setting-up-the-container-with-configuration-files))
+After the container is built you should run `ContainerBuilder::compile()` before you
+use the container.  
+
 **Hint:** To *emit* (send) the response: https://github.com/Nyholm/psr7#emitting-a-response
+
+#### Bonus exercise
+
+For performance reasons, we should not build the container in production environment. 
+We should used a cached/dumped container. See the [Symfony documentation](https://symfony.com/doc/current/components/dependency_injection/compilation.html#dumping-the-configuration-for-performance)
+about how to dump a container.   
 
 ### Exercise 6: Security 
 
