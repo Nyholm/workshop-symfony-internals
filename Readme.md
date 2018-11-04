@@ -94,7 +94,7 @@ update the HTML of your controller in development since the response is cached.
 We want to introduce the concept of "environment" to enable the cache feature
 only in "prod". In "dev" environment we want to use a null cache like `cache/void-adapter`.
 
-Install `symfony/dependency-injection` and create `src/Kernelphp` that should be 
+Install `symfony/dependency-injection` and create `src/Kernel.php` that should be 
 responsible for building the container and building the middleware array. A good
 idea is to only have one public function: `Kernel::handle(RequestInterface $request): ResponseInterface`. 
 
@@ -107,7 +107,7 @@ use the container.
 
 #### Bonus exercise
 
-For performance reasons, we should not build the container in production environment. 
+For performance reasons, we should not build the container at every request in production environment. 
 We should used a cached/dumped container. See the [Symfony documentation](https://symfony.com/doc/current/components/dependency_injection/compilation.html#dumping-the-configuration-for-performance)
 about how to dump a container.   
 
