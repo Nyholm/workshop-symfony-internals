@@ -2,7 +2,9 @@
 
 This workshop slowly builds a framework. 
 
-This workshop requires you to be able to run standard Symfony 4 application. We use PHP 7.1+. 
+This workshop requires you to be able to run standard Symfony 4 application. We use PHP 7.1+.
+
+Here is the slides for the presentation: https://www.slideshare.net/TobiasNyholm/symfony-internals-workshop 
 
 ## Part 1
 
