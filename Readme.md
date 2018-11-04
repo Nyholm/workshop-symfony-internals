@@ -82,7 +82,7 @@ In this exercise we are going to add a cache system. Use your favorite cache lib
 If you do not got a favorite, [php-cache](http://www.php-cache.com/en/latest/) is a 
 good one. (`composer require cache/filesystem-adapter`). 
 
-Create a middleware that cache the requests. So the controller is not hit twice. 
+Create a middleware that cache the requests. So the controller is not hit twice with the same URL. 
 
 ### Exercise 5: Container
 
