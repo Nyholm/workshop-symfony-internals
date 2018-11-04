@@ -64,7 +64,6 @@ namespace App\Middleware;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-
 interface MiddlewareInterface
 {
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next);
@@ -72,6 +71,8 @@ interface MiddlewareInterface
 ```
 
 Make sure to build and run your array of middleware in index.php.
+
+**Note:** As an alternative to `relay/relay` you can use this simple [Runner.php](https://gist.github.com/Nyholm/a7166e6e570738bee75612c3608aa4e3).
 
 ### Exercise 4: Cache
 
